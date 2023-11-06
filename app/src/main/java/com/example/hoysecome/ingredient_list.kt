@@ -1,6 +1,11 @@
 package com.example.hoysecome
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +18,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.URL
+import java.util.concurrent.Executors
+
 
 private const val arg_name = "name";
 class ingredient_list : Fragment() {
@@ -22,6 +30,7 @@ class ingredient_list : Fragment() {
     private val binding get()=_binding!!;
     private lateinit var ingredientesRvadapter: Ingredientes_RVAdapter;
     private lateinit var ingredientesList:MutableList<String>;
+    private lateinit var imageList:MutableList<String>;
 
     private var instance: ingredient_list? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +45,7 @@ class ingredient_list : Fragment() {
                               savedInstanceState: Bundle?): View? {
         _binding = FragmentIngredientListBinding.inflate(layoutInflater);
         ingredientesList=mutableListOf();
+        imageList= mutableListOf();
         initRecycler();
         insertIngredients();
         return binding.root;
@@ -50,11 +60,10 @@ class ingredient_list : Fragment() {
                         putString(arg_name, name);
                     }
                 }
-        fun create(): ingredient_list = ingredient_list()
     }
 
     private fun initRecycler(){
-        ingredientesRvadapter = Ingredientes_RVAdapter(ingredientesList)
+        ingredientesRvadapter = Ingredientes_RVAdapter(ingredientesList, imageList)
         binding.ingredientesList.layoutManager = LinearLayoutManager(this.context)
         binding.ingredientesList.adapter = ingredientesRvadapter
     }
@@ -76,14 +85,18 @@ class ingredient_list : Fragment() {
                         for (key in ingredients!!.results!!.asJsonArray){
                             val art:String = key.asJsonObject.get("name").asString
                             ingredientesList.add(art)
+                            val img:String = key.asJsonObject.get("image").asString
+                            imageList.add(img);
                         }
                     }else{
                         ingredientesList.clear()
+                        imageList.clear()
                     }
                     ingredientesRvadapter.notifyDataSetChanged()
 
                 }else{
                     ingredientesList.clear()
+                    imageList.clear()
                     ingredientesRvadapter.notifyDataSetChanged()
                 }
             }

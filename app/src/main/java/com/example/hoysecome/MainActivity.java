@@ -56,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
             FragmentManager fm = container.getFragment().getParentFragmentManager();
             fm.beginTransaction().replace(fm.findFragmentById(R.id.fragmentContainerView).getId(),list).commit();
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setMessage(searchName)
                 .setTitle("Webo");
 
             AlertDialog dialog = builder.create();
-            dialog.show();
+            dialog.show();*/
 
 
         });
